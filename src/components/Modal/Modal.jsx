@@ -10,22 +10,22 @@ const modalRoot = document.querySelector('#modal-root');
 export const Modal = ({ src, name, toggleModal }) => {
   const [isImgLoad, setiIsImgLoad] = useState(false);
 
-  useEffect(() => {
-    window.addEventListener('keydown', onModalClose);
-    return () => {
-      window.removeEventListener('keydown', onModalClose);
-      setiIsImgLoad(false);
-    };
-  }, []);
-
   const onModalClose = e => {
     if (e.target !== e.currentTarget || e.code === 'Escape') {
       toggleModal();
     }
   };
 
+  useEffect(() => {
+    window.addEventListener('keydown', onModalClose);
+    return () => {
+      window.removeEventListener('keydown', onModalClose);
+      setiIsImgLoad(false);
+    };
+  });
+
   const onImgload = () => {
-    setiIsImgLoad(true);
+    setiIsImgLoad(false);
   };
 
   return createPortal(

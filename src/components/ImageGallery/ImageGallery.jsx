@@ -16,30 +16,29 @@ export const ImageGallery = ({ request }) => {
     setPage(prev => prev + 1);
   };
 
-  const getPhotos = async () => {
-    setIsLoading(true);
-    try {
-      const response = await Fetch(request, page);
-      if (page === 1) {
-        setPhotos(response.data.hits);
-        setTotalPages(Math.ceil(response.data.total / 12));
-      } else {
-        setPhotos(prev => [...prev, ...response.data.hits]);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getPhotos();
-  }, [page]);
-
   useEffect(() => {
     setPage(1);
   }, [request]);
+
+  useEffect(() => {
+    const getPhotos = async () => {
+      setIsLoading(true);
+      try {
+        const response = await Fetch(request, page);
+        if (page === 1) {
+          setPhotos(response.data.hits);
+          setTotalPages(Math.ceil(response.data.total / 12));
+        } else {
+          setPhotos(prev => [...prev, ...response.data.hits]);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getPhotos();
+  }, [page, request]);
 
   return (
     <>
