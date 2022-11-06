@@ -11,7 +11,8 @@ export const Modal = ({ src, name, toggleModal }) => {
   const [isImgLoad, setiIsImgLoad] = useState(false);
 
   const onModalClose = e => {
-    if (e.target !== e.currentTarget || e.code === 'Escape') {
+    const { target, currentTarget, code } = e;
+    if (target === currentTarget || code === 'Escape') {
       toggleModal();
     }
   };

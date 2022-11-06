@@ -4,15 +4,16 @@ import { Modal } from '../Modal/Modal';
 import { useState } from 'react';
 
 export const ImageGalleryItem = ({ previewURL, tags, largeUrl }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(() => false);
 
   const toggleModal = () => {
+    console.log('toggle');
     setIsModalOpen(prev => !prev);
   };
 
   return (
-    <GalleryItem onClick={toggleModal}>
-      <GalleryImg src={previewURL} alt={tags} />
+    <GalleryItem>
+      <GalleryImg src={previewURL} alt={tags} onClick={toggleModal} />
       {isModalOpen && (
         <Modal src={largeUrl} name={tags} toggleModal={toggleModal} />
       )}
