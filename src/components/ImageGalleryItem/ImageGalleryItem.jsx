@@ -7,7 +7,6 @@ export const ImageGalleryItem = ({ previewURL, tags, largeUrl }) => {
   const [isModalOpen, setIsModalOpen] = useState(() => false);
 
   const toggleModal = () => {
-    console.log('toggle');
     setIsModalOpen(prev => !prev);
   };
 
