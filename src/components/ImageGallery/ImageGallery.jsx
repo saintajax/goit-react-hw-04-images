@@ -21,6 +21,16 @@ export const ImageGallery = ({ request }) => {
   }, [request]);
 
   useEffect(() => {
+    if (page !== 1) {
+      const halfVH = window.innerHeight * 0.5;
+      window.scrollBy({
+        top: halfVH,
+        behavior: 'smooth',
+      });
+    }
+  });
+
+  useEffect(() => {
     const getPhotos = async () => {
       setIsLoading(true);
       try {
