@@ -1,5 +1,4 @@
-import { Component } from 'react';
-// import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { PropTypes } from 'prop-types';
 import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
 import { GalleryList } from './ImageGallery.styled';
@@ -7,79 +6,60 @@ import { Loader } from 'components/Loader/Loader';
 import { Button } from '../Button/Button';
 import Fetch from '../../servises/index';
 
-export class ImageGallery extends Component {
-  state = {
-    photos: [],
-    isLoading: false,
-    page: 1,
-    totalPages: 1,
-    error: null,
+export const ImageGallery = ({ request }) => {
+  const [photos, setPhotos] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const loadMore = () => {
+    setPage(prev => prev + 1);
   };
 
-  componentDidMount() {
-    this.getPhotos();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.page !== this.state.page ||
-      prevProps.request !== this.props.request
-    ) {
-      this.getPhotos();
-    }
-
-    if (prevProps.request !== this.props.request) {
-      this.setState({ page: 1 });
-    }
-  }
-
-  getPhotos = async () => {
-    this.setState({ isLoading: true });
+  const getPhotos = async () => {
+    setIsLoading(true);
     try {
-      const response = await Fetch(this.props.request, this.state.page);
-      if (this.state.page === 1) {
-        this.setState({
-          photos: response.data.hits,
-          totalPages: Math.ceil(response.data.total / 12),
-        });
+      const response = await Fetch(request, page);
+      if (page === 1) {
+        setPhotos(response.data.hits);
+        setTotalPages(Math.ceil(response.data.total / 12));
       } else {
-        this.setState(prevState => ({
-          photos: [...prevState.photos, ...response.data.hits],
-        }));
+        setPhotos(prev => [...prev, ...response.data.hits]);
       }
     } catch (error) {
       console.log(error);
     } finally {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }
   };
 
-  loadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
-  };
+  useEffect(() => {
+    getPhotos();
+  }, [page]);
 
-  render() {
-    const { photos, isLoading, page, totalPages } = this.state;
-    return (
-      <>
-        <GalleryList id="gallary">
-          {photos.map(({ webformatURL, tags, largeImageURL }, index) => {
-            return (
-              <ImageGalleryItem
-                key={index}
-                previewURL={webformatURL}
-                tags={tags}
-                largeUrl={largeImageURL}
-              />
-            );
-          })}
-          {isLoading && <Loader />}
-        </GalleryList>
-        {page < totalPages && <Button loadMore={this.loadMore} />}
-      </>
-    );
-  }
-}
+  useEffect(() => {
+    setPage(1);
+  }, [request]);
+
+  return (
+    <>
+      <GalleryList id="gallary">
+        {photos.map(({ webformatURL, tags, largeImageURL }, index) => {
+          return (
+            <ImageGalleryItem
+              key={index}
+              previewURL={webformatURL}
+              tags={tags}
+              largeUrl={largeImageURL}
+            />
+          );
+        })}
+        {isLoading && <Loader />}
+      </GalleryList>
+      {page < totalPages && <Button loadMore={loadMore} />}
+    </>
+  );
+};
 
 ImageGallery.propTypes = {
   request: PropTypes.string.isRequired,

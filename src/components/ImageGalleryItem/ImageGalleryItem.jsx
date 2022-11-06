@@ -1,30 +1,24 @@
 import { PropTypes } from 'prop-types';
 import { GalleryItem, GalleryImg } from './ImageGalleryItem.styled';
 import { Modal } from '../Modal/Modal';
-import { Component } from 'react';
+import { useState } from 'react';
 
-export class ImageGalleryItem extends Component {
-  state = {
-    isModalOpen: false,
+export const ImageGalleryItem = ({ previewURL, tags, largeUrl }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalOpen(prev => !prev);
   };
 
-  toggleModal = () => {
-    this.setState(prevState => ({ isModalOpen: !prevState.isModalOpen }));
-  };
-
-  render() {
-    const { isModalOpen } = this.state;
-    const { previewURL, tags, largeUrl } = this.props;
-    return (
-      <GalleryItem onClick={this.toggleModal}>
-        <GalleryImg src={previewURL} alt={tags} />
-        {isModalOpen && (
-          <Modal src={largeUrl} name={tags} toggleModal={this.toggleModal} />
-        )}
-      </GalleryItem>
-    );
-  }
-}
+  return (
+    <GalleryItem onClick={toggleModal}>
+      <GalleryImg src={previewURL} alt={tags} />
+      {isModalOpen && (
+        <Modal src={largeUrl} name={tags} toggleModal={toggleModal} />
+      )}
+    </GalleryItem>
+  );
+};
 
 ImageGalleryItem.propTypes = {
   previewURL: PropTypes.string.isRequired,

@@ -1,24 +1,19 @@
-import { Component } from 'react';
 import { Box } from './Box/Box';
 import { SearchBar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
+import { useState } from 'react';
 
-export class App extends Component {
-  state = {
-    request: '',
+export const App = () => {
+  const [request, setRequest] = useState('');
+
+  const handleSerachFormSubmit = ({ request }) => {
+    setRequest(request);
   };
 
-  handleSerachFormSubmit = request => {
-    this.setState(request);
-  };
-
-  render() {
-    const { request } = this.state;
-    return (
-      <Box display="grid" grid-template-columns="1fr" grid-gap="16px" pb="24px">
-        <SearchBar onSubmit={this.handleSerachFormSubmit} />
-        <ImageGallery request={request} />
-      </Box>
-    );
-  }
-}
+  return (
+    <Box display="grid" grid-template-columns="1fr" grid-gap="16px" pb="24px">
+      <SearchBar onSubmit={handleSerachFormSubmit} />
+      <ImageGallery request={request} />
+    </Box>
+  );
+};
